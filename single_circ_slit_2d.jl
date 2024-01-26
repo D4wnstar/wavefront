@@ -1,22 +1,24 @@
+using LinearAlgebra
 using Plots
 using PlotThemes
 using DynamicQuantities
 using DynamicQuantities.Units: m, cm, mm, nm, V
 using DynamicQuantities.Constants: c
+using SpecialFunctions
+using BenchmarkTools
 
 theme(:dark)
 
 include("waves.jl")
 
 s  = 4m # distance between slit and screen
-x  = range(-20cm, 20cm, length=1000) # values where the irradiance is sampled on the screen
-y  = range(-20cm, 20cm, length=1000) # values where the irradiance is sampled on the screen
+x  = range(-1cm, 1cm, length=1000) # values where the irradiance is sampled on the screen
+xy = Iterators.product(x, x) .|> norm # distance from center of diffraction
 λ1 = 400nm # the wavelength of the wave
 λ2 = 500nm # the wavelength of the wave
 λ3 = 600nm # the wavelength of the wave
 λ4 = 700nm # the wavelength of the wave
-w  = 0.12mm # slit width
-h  = 0.12mm # slit height
+R  = 0.5mm # slit radius
 
 wave_400 = Wave1D(9V / m, 0m, λ1, 0, c)
 wave_500 = Wave1D(9V / m, 0m, λ2, 0, c)
@@ -25,37 +27,32 @@ wave_700 = Wave1D(9V / m, 0m, λ4, 0, c)
 
 waves = [wave_400, wave_500, wave_600, wave_700]
 
-"This assumes Fraunhofer's far field approximation where `distance` ≫ `slit_width` and `slit_height`"
-function irradiance_rectangular_slit(
-	x::Quantity,
-	y::Quantity,
+"This assumes Fraunhofer's far field approximation where `distance` ≫ `slit_radius`"
+function irradiance_circular_slit(
+	q::Quantity,
 	wave::AbstractWave,
-	slit_width::Quantity,
-	slit_height::Quantity,
+	slit_radius::Quantity,
 	distance::Quantity,
 )
 	k = abs(wavenumber_ang(wave))
-	α = k * 0.5slit_width * x / distance
-	β = k * 0.5slit_height * y / distance
-	I = irradiance(wave) * (sin(α) / α)^2 * (sin(β) / β)^2
-	return I / exp(ustrip(-15abs(x) - 15abs(y))) # dampens the center peak to show the tails better
+	ρ = k * slit_radius * q / distance |> ustrip
+	I = irradiance(wave) * (2besselj1(ρ) / ρ)^2
+	return I / exp(ustrip(-200q)) # dampens the center peak to show the tails better
 end
 
-I = [zeros(length(x), length(y)) for _ in 1:4]
+I = [zeros(size(xy)) for _ in 1:4]
 for (matrix, wave) in zip(I, waves)
-	for (i, xi) in enumerate(x)
-		for (j, yi) in enumerate(y)
-			matrix[i, j] = irradiance_rectangular_slit(xi, yi, wave, w, h, s) |> ustrip
-		end
+	for (i, q) in enumerate(xy)
+		matrix[i] = irradiance_circular_slit(q, wave, R, s) |> ustrip
 	end
 end
 
 heatmap(
 	ustrip.(x),
-	ustrip.(y),
+	ustrip.(x),
 	I,
 	title=reshape([
-		"Intensity profile of rectangular slit diffraction [$(wl)nm]" for
+		"Intensity profile of circular slit diffraction [$(wl)nm]" for
 		wl in ["400", "500", "600", "700"]
 	], (1, 4)),
 	xlabel="x distance from center of slit",
