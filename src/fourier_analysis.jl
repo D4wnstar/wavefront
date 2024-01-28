@@ -8,7 +8,7 @@ t = -π:0.01:π
 freq = 3
 wavefunc(t::Real) = cos(freq * 2π * t) * exp(-π * t^2)
 y = wavefunc.(t)
-transform_arg = map(xi -> wavefunc(xi) * exp(-im * 2π * freq * xi), t)
+transform_arg = [wavefunc(ti) * exp(-im * 2π * freq * ti) for ti in t]
 transform = fft(y)
 
 plot(
