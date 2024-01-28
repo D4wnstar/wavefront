@@ -10,15 +10,17 @@ include("waves.jl")
 
 s  = 4m # distance between slit and screen
 y  = range(-1cm, 1cm, length=1000) # values where the irradiance is sampled on the screen
-λ1 = 670nm
-λ2 = 532nm # the wavelength of the wave
-λ3 = 450nm
+λ1 = 400nm
+λ2 = 500nm # the wavelength of the wave
+λ3 = 600nm
+λ4 = 700nm
 d  = 0.42mm # slit width
 a  = 1mm # slit distance
 
-wave_green = Wave1D(9V / m, 0m, λ1, 0, c)
-wave_red   = Wave1D(9V / m, 0m, λ2, 0, c)
-wave_blue  = Wave1D(9V / m, 0m, λ3, 0, c)
+wave_400 = Wave1D(9V / m, 0m, λ1, 0, c)
+wave_500 = Wave1D(9V / m, 0m, λ2, 0, c)
+wave_600 = Wave1D(9V / m, 0m, λ3, 0, c)
+wave_700 = Wave1D(9V / m, 0m, λ4, 0, c)
 
 """
 This assumes Fraunhofer's far field approximation where `distance` ≫ `slit_width`.
@@ -38,16 +40,18 @@ function irradiance_double_slit(
 	return irradiance(wave) * (sin(β) / β)^2 * cos(k * slit_width * x / distance)^2
 end
 
-I1 = irradiance_double_slit.(y, wave_green, d, a, s)
-I2 = irradiance_double_slit.(y, wave_red, d, a, s)
-I3 = irradiance_double_slit.(y, wave_blue, d, a, s)
+I1 = irradiance_double_slit.(y, wave_400, d, a, s) .|> ustrip
+I2 = irradiance_double_slit.(y, wave_500, d, a, s) .|> ustrip
+I3 = irradiance_double_slit.(y, wave_600, d, a, s) .|> ustrip
+I4 = irradiance_double_slit.(y, wave_700, d, a, s) .|> ustrip
+
 plot(
 	ustrip.(y),
-	ustrip.(I1),
+	[I1, I2, I3, I4],
 	title="Intensity profile of double slit diffraction",
 	xlabel="Distance from center of slits",
 	ylabel="Intensity",
-	label="670nm",
+	label=reduce(hcat, ["$(wl)nm" for wl in ["400", "500", "600", "700"]]),
+	size=(1400, 1200),
+	left_margin=(6.0, :mm),
 )
-plot!(ustrip.(y), ustrip.(I2), label="532nm")
-plot!(ustrip.(y), ustrip.(I3), label="450nm")

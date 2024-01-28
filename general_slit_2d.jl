@@ -28,15 +28,6 @@ wave_700 = Wave1D(9V / m, 0m, λ4, 0, c)
 waves = [wave_400, wave_500, wave_600, wave_700]
 # waves = [wave_400]
 
-# verts = [
-# 	(0.0, 0.0),
-# 	(0.0, 1.0e-4),
-# 	(1.0e-4, 1.0e-4),
-# 	(2.0e-4, 2.0e-4),
-# 	(1.0e-4, 3.0e-4),
-# 	(0.0, 2.0e-4),
-# 	(-1.0e-4, 1.0e-4),
-# ]
 verts = [
 	(-6e-4, -6e-4),
 	(-6e-4, 6e-4),
@@ -60,17 +51,8 @@ end
 # E = e^iks / A * double integral of incident field * e^-i(k_x*x'+k_y*y') dx'dy'
 # with k_x = ksin(θ)cos(ϕ) and k_y = ksin(θ)cos(ϕ)
 # The integral is over the area of the slit
-# With a sufficiently far away screen (at distance s), sin(θ) ≈ tan(θ) ≈ y/s
-# and cos(θ) ≈ 1 + tan(θ) ≈ 1 + y/s. Same goes for ϕ, except it becomes x/s
-# Thus we get k_x = ky/s + kyx/s^2 and k_y = kyx/s^2
-# Calling yx/s^2 = β and yx/s^2 + y/s = α and incident field E0 we get the integral
-# ∬E0(x',y')e^[-ik(αx'+βy')] dx'dy'
-# which is the (2D) Fourier transform of E0, so Ê0(αk,βk)
-# Thus the electric field for over point (x,y) of the screen is
-# E(x,y) = e^iks / A * Ê0(αk, βk)
-# Partly from Wikipedia (https://en.wikipedia.org/wiki/Diffraction#General_aperture)
-# partly derived myself
 
+# Currently does not work as intended
 "This assumes Fraunhofer's far field approximation"
 function irradiance_general_slit(
 	x::Quantity,

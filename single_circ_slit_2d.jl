@@ -51,10 +51,11 @@ heatmap(
 	ustrip.(x),
 	ustrip.(x),
 	I,
-	title=reshape([
-		"Intensity profile of circular slit diffraction [$(wl)nm]" for
-		wl in ["400", "500", "600", "700"]
-	], (1, 4)),
+	title=reshape(
+		[
+			"Intensity profile of circular slit diffraction [$(wl)nm]" for
+			wl in ["400", "500", "600", "700"]
+		], (1, 4)),
 	xlabel="x distance from center of slit",
 	ylabel="y distance from center of slit",
 	colorbar_title="Intensity",
