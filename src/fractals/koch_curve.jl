@@ -26,14 +26,15 @@ theme(:dracula)
 # 	return [A, B, C, D, E], direction
 # end
 
-function segment_koch_component(A::Point2, Z::Point2)::Vector{Point2}
+function segment_koch_component(A::Point2, Z::Point2; antiflake=false)::Vector{Point2}
+	spin = antiflake ? -1 : 1
 	unnormed = (Z - A)
 	dist = round(norm(unnormed); digits = 6)
 	direction = unnormed / dist
 	B = A + direction * dist / 3
 	D = A + direction * 2dist / 3
 	E = Z
-	direction = Rotate(Angle2d(-π / 3))(direction)
+	direction = Rotate(Angle2d(spin * π / 3))(direction)
 	C = B + direction * dist / 3
 
 	return [A, B, C, D, E]
