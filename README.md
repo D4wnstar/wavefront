@@ -3,3 +3,4 @@ A repository of personal experiments in scientific computation using Julia. Ther
 As of current, there are:
 - accurate diffraction patterns for a few slit shapes (1D, 2D rectangle, 2D circle)
 - fractal plotting
+- quantum wavefunctions
