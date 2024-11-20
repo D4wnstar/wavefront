@@ -4,3 +4,4 @@ As of current, there are:
 - diffraction patterns for a few slit shapes (1D, 2D rectangle, 2D circle)
 - fractal plotting
 - quantum wavefunctions
+- an implementation of a Kohonen neural network
