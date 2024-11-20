@@ -1,9 +1,13 @@
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 DynamicQuantities = "06fc5a27-2a28-4c7c-a15d-362465fb6821"
 FFTW = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
 HCubature = "19dc6840-f33b-545b-b366-655c7e3ffd49"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
+MLDatasets = "eb30cadb-4394-5ae3-aed4-317e484a6458"
 Meshes = "eacbb407-ea5a-433e-ab97-5258b1ca43fa"
 PlotThemes = "ccf2f8ad-2431-5c83-bf29-c5338b663b6a"
 ProgressMeter = "92933f4c-e287-5a05-a399-4b506db050ca"
