@@ -42,15 +42,12 @@ initial_state(x, m, ω) = (ψ_0(x, m, ω) + ψ_1(x, m, ω)) / √2
 	println("Calculating time $t...")
 	if i == 1
 		state = initial_state.(x, m, ω)
-		yreal = real(state)
-		yimag = imag(state)
-		yt = abs2.(state)
 	else
 		state = ψ_t.(x, t, m, ω, initial_state)
-		yreal = real(state)
-		yimag = imag(state)
-		yt = abs2.(state)
 	end
+	yreal = real(state)
+	yimag = imag(state)
+	yt = abs2.(state)
 
 	t = round(t, digits=2)
 
@@ -60,7 +57,7 @@ initial_state(x, m, ω) = (ψ_0(x, m, ω) + ψ_1(x, m, ω)) / √2
 		ylims=[(-1, 1) (0, 1)],
 		label=[["Real part" L"\frac{\psi_{0}+\psi_{1}}{\sqrt{2}}"] "Imaginary part"],
 		xlabel=L"x",
-		ylabel=L"Probability $|\psi(x,t)|^2$",
+		ylabel=["Probability amplitude" L"Probability $|\psi(x,t)|^2$"],
 		title=L"Time evolution of a quantum harmonic oscillator state ($t=%$t$)",
 		size=(900, 1200),
 		layout=(2, 1),
