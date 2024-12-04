@@ -8,30 +8,37 @@ theme(:dracula)
 
 include("common.jl")
 
-function segment_koch_component(A::Point2, Z::Point2; antiflake=false)::Vector{Point2}
+function koch_segmenter(seg::Segment, antiflake=false)::Chain
 	spin = antiflake ? -1 : 1
-	delta = Z - A
-	dist = norm(delta)
-	direction = delta / dist
-	B = A + direction * dist / 3
-	D = A + direction * 2dist / 3
-	E = Z
-	direction = rotate(direction, spin * π / 3)
-	C = B + direction * dist / 3
+	seg_length = norm(seg)
+	direction = (seg.finish - seg.start) / seg_length
+	step = seg_length / 3
 
-	return [A, B, C, D, E]
+	turtle = Turtle(seg.start, direction)
+
+	# Production rule is → becomes →↺→↻↻→↺→
+	A = seg.start
+	B = forward(turtle, step)
+	rotate(turtle, spin * π / 3)
+	C = forward(turtle, step)
+	rotate(turtle, spin * -2π / 3)
+	D = forward(turtle, step)
+	rotate(turtle, spin * π / 3)
+	E = forward(turtle, step)
+
+	return Chain([A, B, C, D, E])
 end
 
 A = Point2(0.0, 0.0)
 B = Point2(0.5, sqrt(3) / 2)
 C = Point2(1.0, 0.0)
 
-verts = [A, B, C]
-graphs = [plot([A, B, C, A])]
+triangle = Polygon([A, B, C])
+graphs = [plot(triangle, aspectratio=1)]
 titles = ["Starting shape"]
 for i in 1:5
-	points = draw_fractal(verts, segment_koch_component, iterations=unsigned(i))
-	push!(graphs, plot(points))
+	poly = draw_fractal(triangle, s -> koch_segmenter(s, true), i)
+	push!(graphs, plot(poly, aspectratio=1))
 	titles = [titles... "Iteration $i"]
 end
 
