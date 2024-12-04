@@ -1,13 +1,15 @@
 using LinearAlgebra
 
 using Base: +, -, *, /
-using Plots: plot
+using Plots
 
-struct Point2{T <: AbstractFloat}
+"""A 2-dimensional vector Cartesian coordinates."""
+mutable struct Point2{T <: AbstractFloat}
 	x::T
 	y::T
 end
 
+# 2D vector algebra
 Base.:+(p1::Point2, p2::Point2) = Point2(p1.x + p2.x, p1.y + p2.y)
 Base.:-(p::Point2) = Point2(-p.x, -p.y)
 Base.:-(p1::Point2, p2::Point2) = Point2(p1.x - p2.x, p1.y - p2.y)
@@ -17,6 +19,28 @@ LinearAlgebra.norm(p::Point2) = p.x^2 + p.y^2
 
 a = Point2(2.0, 3.0)
 b = Point2(1.0, 3.0)
+
+"""A segment between two points."""
+struct Segment{T <: AbstractFloat}
+	start::Point2{T}
+	finish::Point2{T} # end is a reserved keyword
+end
+
+s = Segment(a, b)
+
+mutable struct Turtle{T <: AbstractFloat}
+	pos::Point2{T}
+	dir::Point2{T}
+end
+
+t = Turtle(Point2(0.0, 0.0), Point2(1.0, 0.0))
+
+"""Rotate the turtle's walking direction by the given angle. Modifies in-place."""
+function rotate(turtle::Turtle, angle::T) where {T <: Real}
+	turtle.dir.x = turtle.dir.x * cos(angle) - turtle.dir.y * sin(angle)
+	turtle.dir.y = turtle.dir.x * sin(angle) + turtle.dir.y * cos(angle)
+	return nothing
+end
 
 """Rotate a point about the origin by a given angle (in radians)."""
 function rotate(p::Point2, angle::T) where {T <: Real}
